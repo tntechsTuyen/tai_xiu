@@ -16,15 +16,19 @@ import com.mnt.tx.data.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SicboLayout extends LinearLayout {
 
     private Point current;
-    Paint paintRect = new Paint(), paintText = new Paint();
-    int w = 100, h = 100;
+    Paint paintRect = new Paint(), paintText = new Paint(), paintLine = new Paint();
+    int w = 50, h = 50;
     int rows = 6, columns = 0;
     int size = 50;
+    Float fontSize = 30f;
 
     /**
      * data[column][row]
@@ -62,7 +66,7 @@ public class SicboLayout extends LinearLayout {
 
     private void addColumn(List<String> col){
         this.data.add(col);
-        setLayoutParams(new LayoutParams(this.data.size() * size, (rows * size) + (size*2)));
+        setLayoutParams(new LayoutParams(this.data.size() * size, (rows * size) + 5));
         invalidate();
     }
 
@@ -71,17 +75,23 @@ public class SicboLayout extends LinearLayout {
      * */
     public void addValueItem(Point point){
         List<String> dataTemp = Arrays.asList("", "", "", "", "", "");
-        int nCol, nRow;
-        if(this.current == null){
-            nCol = 0; nRow = 0;
-        }else{
-            if(!this.current.equals(point)){
-                nCol = this.current.getColumn()+1; nRow = 0;
-            }else{
-                if(this.current.isRowEnd()) {
-                    nCol = this.current.getColumn() + 1; nRow = this.current.getRow();
-                }else{
-                    nCol = this.current.getColumn(); nRow = this.current.getRow() + 1;
+        int nCol = 0, nRow = 0;
+        if(current != null) {
+            if (!this.current.equals(point)) {
+                for (int i = 0; i < data.size(); i++) {
+                    if (data.get(i).get(0).equals("")) {
+                        nCol = i;
+                        break;
+                    }
+                }
+                nRow = 0;
+            } else {
+                if (this.current.getRow() == rows - 1 || (this.current.getRow() < rows - 1 && !data.get(current.getColumn()).get(current.getRow()+1).equals(""))) {
+                    nCol = this.current.getColumn() + 1;
+                    nRow = this.current.getRow();
+                } else {
+                    nCol = this.current.getColumn();
+                    nRow = this.current.getRow() + 1;
                 }
             }
         }
@@ -92,7 +102,7 @@ public class SicboLayout extends LinearLayout {
         }else{
             this.data.get(nCol).set(nRow, point.getTitle());
         }
-        this.current = new Point(nCol, nRow, point.getData());
+        this.current = new Point(nCol, nRow, point.getData(), this.current);
         invalidate();
     }
 
@@ -101,12 +111,14 @@ public class SicboLayout extends LinearLayout {
         paintRect.setStyle(Paint.Style.STROKE);
 
         paintText.setColor(Color.BLACK);
-        paintText.setTextSize(30f);
+        paintText.setTextSize(fontSize);
 
+        paintLine.setColor(Color.rgb(255, 0, 0));
     }
 
     public void initData(){
-        for(int i = 0; i <= Resources.getSystem().getDisplayMetrics().widthPixels / size; i++){
+        System.out.println("SIZE: "+Resources.getSystem().getDisplayMetrics().heightPixels);
+        for(int i = 0; i <= Resources.getSystem().getDisplayMetrics().heightPixels / size; i++){
             addColumn(Arrays.asList("", "", "", "", "", ""));
         }
     }
@@ -117,12 +129,21 @@ public class SicboLayout extends LinearLayout {
         for(int i = 0; i < data.size(); i++){
             paint(canvas, i);
         }
+        Map<Integer, Map<Integer, Point>> lines = new LinkedHashMap<>();
+        for(int i = 0; i < data.size(); i++){
+            for(int j = 0; j < data.get(i).size(); j++){
+                if(lines.get(i) == null) { lines.put(i, Map.of(j, new Point(i, j, data.get(i).get(j)))); }
+                else {
+
+                }
+            }
+        }
     }
 
     public void paint(Canvas canvas, int col){
         for(int i = 0; i < data.get(col).size(); i++){
             canvas.drawRect(col * size + 1, (i*size) + 1, col * size + w, (i*size) + h, paintRect);
-            canvas.drawText(data.get(col).get(i), col * size + w/2, (i * size) + h/2, paintText);
+            canvas.drawText(data.get(col).get(i), col * size + size/2 - fontSize.intValue()/2, (i * size) + size/2 + fontSize.intValue()/2, paintText);
         }
     }
 }

@@ -12,15 +12,23 @@ public class Point {
     private Integer row;
     private Data data;
     private String title;
+    private Point child;
 
     public Point(Data data){
         this.data = data;
     }
 
-    public Point(Integer column, Integer row, Data data) {
+    public Point(Integer column, Integer row, String title){
+        this.column = column;
+        this.row = row;
+        this.title = title;
+    }
+
+    public Point(Integer column, Integer row, Data data, Point child) {
         this.column = column;
         this.row = row;
         this.data = data;
+        this.child = child;
     }
 
     public Integer getColumn() {
@@ -35,8 +43,8 @@ public class Point {
         return data;
     }
 
-    public boolean isRowEnd(){
-        return (this.getRow() - 5 == 0);
+    public Point getChild() {
+        return child;
     }
 
     public String getTitle() {
@@ -50,7 +58,16 @@ public class Point {
     }
 
     public boolean equals(Point p){
-        return this.getTitle().equals(p.getTitle()) || p.getTitle().equals("B");
+        return this.getTitle().equals(p.getTitle()) || p.getTitle().equals("B") || equalsChild(this, p.getTitle());
+    }
+
+    public boolean equalsChild(Point p, String title){
+        if(p.getTitle().equals("B")){
+            if(p.getChild() != null) return equalsChild(p.getChild(), title);
+            else return true;
+        }else{
+            return p.getTitle().equals(title);
+        }
     }
 
     public static class Data{

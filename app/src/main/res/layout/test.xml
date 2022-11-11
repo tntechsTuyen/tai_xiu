@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="1dp"
-        android:background="@color/black"
+        android:background="@color/gray"
         android:gravity="center"
         android:text="1"
         android:textColor="@color/red"
@@ -28,7 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="1dp"
-        android:background="@color/black"
+        android:background="@color/gray"
         android:gravity="center"
         android:text="B"
         android:textColor="@color/blue"
@@ -38,8 +38,7 @@
         app:layout_constraintEnd_toEndOf="@+id/btn_3"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_value_title"
-        app:layout_constraintTop_toTopOf="@+id/tv_value_title"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/tv_value_title" />
 
     <EditText
         android:id="@+id/et_val_1"
@@ -61,6 +60,7 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:paddingHorizontal="4dp"
+        android:text="1"
         android:textColor="@color/black"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="@+id/et_val_1"
@@ -155,7 +155,7 @@
     <HorizontalScrollView
         android:id="@+id/hsv"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_weight="0"
         android:fillViewport="true"
@@ -169,7 +169,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -184,12 +184,13 @@
     <HorizontalScrollView
         android:id="@+id/hsv1"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_weight="0"
         android:fillViewport="true"
         android:measureAllChildren="false"
         android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/hsv"
@@ -197,7 +198,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 

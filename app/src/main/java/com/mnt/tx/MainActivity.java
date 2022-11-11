@@ -20,10 +20,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private SicboLayout sl, sl1;
-    private Button btnAdd, btnClear;
+    private TextView btnAdd, btnClear;
     private Button btn1, btn2, btn3, btn4, btn5, btn6;
     private EditText etVal;
-    private TextView tvValNumber, tvValTitle;
+    private TextView tvValNumber, tvValTitle, tvCurrentNumber;
     Point p;
 
     @Override
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         etVal = findViewById(R.id.et_val_1);
         tvValNumber = findViewById(R.id.tv_value_number);
         tvValTitle = findViewById(R.id.tv_value_title);
+        tvCurrentNumber = findViewById(R.id.tv_current_number);
         sl.initData();
         sl1.initData();
     }
@@ -70,11 +71,12 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         etVal.setText(String.format("%s+%s", currTxt, btn.getText().toString()));
                     }
+                    tvCurrentNumber.setText(btn.getText().toString());
                     if(etVal.getText().toString().trim().length() == 5){
                         String[] v = currTxt.split("\\+");
                         p = new Point(new Point.Data(Integer.valueOf(v[0]), Integer.valueOf(v[1]), Integer.valueOf(btn.getText().toString())));
-                        tvValNumber.setText(String.format(" = %d", p.getData().getTotal()));
-                        tvValTitle.setText(String.format("(%s)",p.getTitle()));
+                        tvValNumber.setText(String.format("%d",p.getData().getTotal()));
+                        tvValTitle.setText(String.format("%s",p.getTitle()));
                     }
                 }
             });
@@ -83,15 +85,26 @@ public class MainActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sl.addValueItem(p);
-                Toast.makeText(MainActivity.this, p.getTitle(), Toast.LENGTH_SHORT).show();
+                if(p != null){
+                    sl.addValueItem(p);
+                    Toast.makeText(MainActivity.this, p.getTitle(), Toast.LENGTH_SHORT).show();
+                    clear();
+                }
             }
         });
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                clear();
             }
         });
+    }
+
+    private void clear(){
+        this.p = null;
+        tvValNumber.setText("");
+        tvValTitle.setText("");
+        tvCurrentNumber.setText("");
+        etVal.setText("");
     }
 }
