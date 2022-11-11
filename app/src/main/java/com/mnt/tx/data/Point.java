@@ -1,7 +1,5 @@
 package com.mnt.tx.data;
 
-import androidx.annotation.Nullable;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +10,12 @@ public class Point {
     private Integer row;
     private Data data;
     private String title;
-    private Point child;
+    private Point parent;
+
+    public Point(Integer column, Integer row){
+        this.column = column;
+        this.row = row;
+    }
 
     public Point(Data data){
         this.data = data;
@@ -24,11 +27,11 @@ public class Point {
         this.title = title;
     }
 
-    public Point(Integer column, Integer row, Data data, Point child) {
+    public Point(Integer column, Integer row, Data data, Point parent) {
         this.column = column;
         this.row = row;
         this.data = data;
-        this.child = child;
+        this.parent = parent;
     }
 
     public Integer getColumn() {
@@ -43,16 +46,16 @@ public class Point {
         return data;
     }
 
-    public Point getChild() {
-        return child;
+    public Point getParent() {
+        return parent;
     }
 
     public String getTitle() {
         if(data.isSame()){
+            title = "B";
+        }else{
             if(data.getTotal() >= 4 && data.getTotal() <= 10) title = "X";
             else title = "T";
-        }else{
-            title = "B";
         }
         return title;
     }
@@ -63,11 +66,27 @@ public class Point {
 
     public boolean equalsChild(Point p, String title){
         if(p.getTitle().equals("B")){
-            if(p.getChild() != null) return equalsChild(p.getChild(), title);
+            if(p.getParent() != null) return equalsChild(p.getParent(), title);
             else return true;
         }else{
             return p.getTitle().equals(title);
         }
+    }
+
+    public String getNodeTitle(){
+        if(this.getParent() == null){
+            return this.getTitle();
+        } else {
+            if(this.getTitle().equals("B")){
+                return this.getParent().getNodeTitle();
+            }else{
+                return this.getTitle();
+            }
+        }
+    }
+
+    public Point getNodeRoot(){
+        return (this.getParent() == null) ? this : this.getParent().getNodeRoot();
     }
 
     public static class Data{
