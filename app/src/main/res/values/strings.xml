@@ -1,3 +1,13 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">tx</string>
+    <string name="dice">&#xf522;</string>
+    <string name="dice_1">&#xf525;</string>
+    <string name="dice_2">&#xf528;</string>
+    <string name="dice_3">&#xf527;</string>
+    <string name="dice_4">&#xf524;</string>
+    <string name="dice_5">&#xf523;</string>
+    <string name="dice_6">&#xf526;</string>
+    <string name="trash_alt">&#xf2ed;</string>
+    <string name="backward">&#xf04a;</string>
+    <string name="plus" tools:ignore="ExtraTranslation">&#xf067;</string>
 </resources>

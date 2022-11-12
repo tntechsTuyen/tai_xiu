@@ -3,27 +3,38 @@ package com.mnt.tx;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mnt.tx.adapter.TableAdapter;
 import com.mnt.tx.data.Point;
+import com.mnt.tx.data.Table;
+import com.mnt.tx.widget.IconView;
 import com.mnt.tx.widget.SicboLayout;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
-@SuppressLint("NewApi")
+@SuppressLint({"NewApi","DefaultLocale"})
 public class MainActivity extends AppCompatActivity {
 
     private SicboLayout sl, sl1;
     private TextView btnAdd, btnClear;
-    private Button btn1, btn2, btn3, btn4, btn5, btn6;
+    private IconView btn1, btn2, btn3, btn4, btn5, btn6, btnAddTable;
+    private List<IconView> btns = new ArrayList<>();
     private EditText etVal;
-    private TextView tvValNumber, tvValTitle, tvCurrentNumber;
+    private TextView tvValNumber, tvValTitle;
+    private ListView lvTable;
+    private TableAdapter adapter;
+    private List<Table> tables;
     Point p;
 
     @Override
@@ -36,7 +47,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView(){
-
+        tables = new ArrayList<>();
+        lvTable = findViewById(R.id.lv_table);
+        adapter = new TableAdapter(tables, this);
+        lvTable.setAdapter(adapter);
+        initData();
         sl = findViewById(R.id.sb_layout);
         sl1 = findViewById(R.id.sb_layout_1);
         btnAdd = findViewById(R.id.btn_add);
@@ -47,37 +62,46 @@ public class MainActivity extends AppCompatActivity {
         btn4 = findViewById(R.id.btn_4);
         btn5 = findViewById(R.id.btn_5);
         btn6 = findViewById(R.id.btn_6);
+        btns = Arrays.asList(btn1, btn2, btn3, btn4, btn5, btn6);
+        btnAddTable = findViewById(R.id.btn_add_table);
         etVal = findViewById(R.id.et_val_1);
         tvValNumber = findViewById(R.id.tv_value_number);
         tvValTitle = findViewById(R.id.tv_value_title);
-        tvCurrentNumber = findViewById(R.id.tv_current_number);
+//        tvCurrentNumber = findViewById(R.id.tv_current_number);
         sl.initData();
         sl1.initData();
     }
 
+    private void initData(){
+        tables.add(new Table("Bàn 1", true));
+        adapter.notifyDataSetChanged();
+    }
+
     private void actionView(){
-        List<Button> btns = Arrays.asList(btn1, btn2, btn3, btn4, btn5, btn6);
-        btns.forEach((btn) -> {
+        IntStream.range(0, btns.size()).forEach((i) -> {
+            IconView btn = btns.get(i);
+            int val = i + 1;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     String currTxt = etVal.getText().toString();
                     if(currTxt.trim().length() >= 5){
-                        Toast.makeText(MainActivity.this, "Số lượng đã đủ", Toast.LENGTH_SHORT).show();
                         return;
                     }
+
                     if(currTxt.trim().length() == 0){
-                        etVal.setText(btn.getText().toString());
+                        etVal.setText(String.valueOf(val));
                     }else{
-                        etVal.setText(String.format("%s+%s", currTxt, btn.getText().toString()));
+                        etVal.setText(String.format("%s+%d", currTxt, val));
                     }
-                    tvCurrentNumber.setText(btn.getText().toString());
                     if(etVal.getText().toString().trim().length() == 5){
                         String[] v = currTxt.split("\\+");
-                        p = new Point(new Point.Data(Integer.valueOf(v[0]), Integer.valueOf(v[1]), Integer.valueOf(btn.getText().toString())));
+                        p = new Point(new Point.Data(Integer.valueOf(v[0]), Integer.valueOf(v[1]), val));
                         tvValNumber.setText(String.format("%d",p.getData().getTotal()));
                         tvValTitle.setText(String.format("%s",p.getTitle()));
                     }
+                    clearBtn();
+                    btn.setTextColor(getResources().getColor(R.color.red));
                 }
             });
         });
@@ -92,6 +116,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnAddTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tables.add(new Table(String.format("Bàn %d", tables.size() + 1)));
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +137,13 @@ public class MainActivity extends AppCompatActivity {
         this.p = null;
         tvValNumber.setText("");
         tvValTitle.setText("");
-        tvCurrentNumber.setText("");
         etVal.setText("");
+        clearBtn();
+    }
+
+    private void clearBtn(){
+        btns.forEach((btn) -> {
+            btn.setTextColor(getResources().getColor(R.color.white));
+        });
     }
 }

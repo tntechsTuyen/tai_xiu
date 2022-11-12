@@ -2,8 +2,285 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ListView
+        android:id="@+id/lv_table"
+        android:layout_width="80dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:background="#FFF"
+        app:layout_constraintEnd_toStartOf="@+id/lv_table"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <HorizontalScrollView
+            android:id="@+id/hsv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:fillViewport="true"
+            android:measureAllChildren="false"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/hsv1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cv_left"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.mnt.tx.widget.SicboLayout
+                    android:id="@+id/sb_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#fff" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="#FFF"
+        app:layout_constraintEnd_toEndOf="@+id/cardView2"
+        app:layout_constraintStart_toStartOf="@+id/cardView2"
+        app:layout_constraintTop_toBottomOf="@+id/cardView2">
+
+        <HorizontalScrollView
+            android:id="@+id/hsv1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:fillViewport="true"
+            android:measureAllChildren="false"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/hsv"
+            app:layout_constraintTop_toBottomOf="@+id/hsv">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.mnt.tx.widget.SicboLayout
+                    android:id="@+id/sb_layout_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#fff" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </androidx.cardview.widget.CardView>
+
+    <EditText
+        android:id="@+id/et_val_1"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/gray"
+        android:enabled="false"
+        android:gravity="right|center"
+        android:paddingRight="4dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/tv_value_number"
+        app:layout_constraintEnd_toEndOf="@+id/tv_value_type"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tv_value_number" />
+
+    <com.mnt.tx.widget.IconView
+        android:id="@+id/btn_delete"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@color/red"
+        android:gravity="center"
+        android:text="@string/trash_alt"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@+id/et_val_1"
+        app:layout_constraintStart_toStartOf="@+id/btn_1"
+        app:layout_constraintTop_toTopOf="@+id/et_val_1" />
+
+    <com.mnt.tx.widget.IconView
+        android:id="@+id/btn_back"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/yellow"
+        android:gravity="center"
+        android:text="@string/backward"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@+id/et_val_1"
+        app:layout_constraintStart_toEndOf="@+id/btn_delete"
+        app:layout_constraintTop_toTopOf="@+id/et_val_1" />
+
+    <TextView
+        android:id="@+id/btn_add"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/green"
+        android:gravity="center"
+        android:text="Thêm"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@+id/et_val_1"
+        app:layout_constraintEnd_toEndOf="@+id/btn_6"
+        app:layout_constraintStart_toEndOf="@+id/btn_back"
+        app:layout_constraintTop_toTopOf="@+id/et_val_1" />
+
+    <TextView
+        android:id="@+id/tv_value_type"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="L"
+        android:textColor="@color/red"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_value_title"
+        app:layout_constraintStart_toEndOf="@+id/tv_value_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_value_title" />
+
+    <TextView
+        android:id="@+id/tv_value_title"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="T"
+        android:textColor="@color/red"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_value_number"
+        app:layout_constraintStart_toEndOf="@+id/tv_value_number"
+        app:layout_constraintTop_toTopOf="@+id/tv_value_number" />
+
+    <TextView
+        android:id="@+id/tv_value_number"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/blue"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.mnt.tx.widget.IconView
+        android:id="@+id/btn_1"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="10dp"
+        android:background="@color/blue"
+        android:gravity="center"
+        android:text="@string/dice_1"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_value_type"
+        app:layout_constraintStart_toEndOf="@+id/tv_value_type"
+        app:layout_constraintTop_toTopOf="@+id/tv_value_type" />
+
+    <com.mnt.tx.widget.IconView
+        android:id="@+id/btn_2"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/blue"
+        android:text="@string/dice_2"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_1"
+        app:layout_constraintStart_toEndOf="@+id/btn_1"
+        app:layout_constraintTop_toTopOf="@+id/btn_1" />
+
+    <com.mnt.tx.widget.IconView
+        android:id="@+id/btn_3"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/blue"
+        android:text="@string/dice_3"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_2"
+        app:layout_constraintStart_toEndOf="@+id/btn_2"
+        app:layout_constraintTop_toTopOf="@+id/btn_2" />
+
+    <com.mnt.tx.widget.IconView
+        android:id="@+id/btn_4"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/blue"
+        android:text="@string/dice_4"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_3"
+        app:layout_constraintStart_toEndOf="@+id/btn_3"
+        app:layout_constraintTop_toTopOf="@+id/btn_3" />
+
+    <com.mnt.tx.widget.IconView
+        android:id="@+id/btn_5"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/blue"
+        android:text="@string/dice_5"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_4"
+        app:layout_constraintStart_toEndOf="@+id/btn_4"
+        app:layout_constraintTop_toTopOf="@+id/btn_4" />
+
+    <com.mnt.tx.widget.IconView
+        android:id="@+id/btn_6"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:background="@color/blue"
+        android:text="@string/dice_6"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_5"
+        app:layout_constraintStart_toEndOf="@+id/btn_5"
+        app:layout_constraintTop_toTopOf="@+id/btn_5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

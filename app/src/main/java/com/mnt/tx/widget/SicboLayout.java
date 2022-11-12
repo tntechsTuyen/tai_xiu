@@ -24,7 +24,6 @@ import java.util.Map;
 @SuppressLint("NewApi")
 public class SicboLayout extends LinearLayout {
 
-    private Point current;
     Paint paintRect = new Paint(), paintText = new Paint(), paintLine = new Paint();
     int w = 50, h = 50;
     int rows = 6, columns = 0;
@@ -34,8 +33,28 @@ public class SicboLayout extends LinearLayout {
     /**
      * data[column][row]
      * */
+    private Point current;
     List<List<Point>> data = new ArrayList<>();
     Map<String, Map<Integer, List<Point>>> lines = new LinkedHashMap<>();
+
+    public Point getCurrent() {
+        return current;
+    }
+
+    public List<List<Point>> getData() {
+        return data;
+    }
+
+    public Map<String, Map<Integer, List<Point>>> getLines() {
+        return lines;
+    }
+
+    public void setData(List<List<Point>> data, Map<String, Map<Integer, List<Point>>> lines, Point current){
+        this.data = data;
+        this.lines = lines;
+        this.current = current;
+        invalidate();
+    }
 
     public SicboLayout(Context context) {
         super(context);
