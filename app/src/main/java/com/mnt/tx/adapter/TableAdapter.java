@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.mnt.tx.MainActivity;
 import com.mnt.tx.R;
 import com.mnt.tx.data.Table;
 import com.mnt.tx.widget.IconView;
@@ -19,9 +20,9 @@ import java.util.List;
 public class TableAdapter extends BaseAdapter {
 
     List<Table> tables;
-    Activity activity;
+    MainActivity activity;
 
-    public TableAdapter(List<Table> tables, Activity activity) {
+    public TableAdapter(List<Table> tables, MainActivity activity) {
         this.tables = tables;
         this.activity = activity;
     }
@@ -53,7 +54,7 @@ public class TableAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.loadData(tables.get(i));
-        viewHolder.actionView(tables.get(i));
+        viewHolder.actionView(tables.get(i), i);
         return convertView;
     }
 
@@ -83,9 +84,8 @@ public class TableAdapter extends BaseAdapter {
             }
         }
 
-        public void actionView(Table data){
+        public void actionView(Table data, Integer position){
             this.v.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View view) {
                     if(data.isActive()) return;
@@ -94,6 +94,7 @@ public class TableAdapter extends BaseAdapter {
                     });
                     data.setActive(true);
                     notifyDataSetChanged();
+                    activity.changeTableIndex(position);
                 }
             });
         }

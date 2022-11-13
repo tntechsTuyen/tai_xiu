@@ -3,20 +3,17 @@ package com.mnt.tx;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mnt.tx.adapter.TableAdapter;
 import com.mnt.tx.data.Point;
 import com.mnt.tx.data.Table;
 import com.mnt.tx.widget.IconView;
-import com.mnt.tx.widget.SicboLayout;
+import com.mnt.tx.widget.SicboTxLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,15 +23,16 @@ import java.util.stream.IntStream;
 @SuppressLint({"NewApi","DefaultLocale"})
 public class MainActivity extends AppCompatActivity {
 
-    private SicboLayout sl, sl1;
-    private TextView btnAdd, btnClear;
-    private IconView btn1, btn2, btn3, btn4, btn5, btn6, btnAddTable;
+    private SicboTxLayout sl, sl1;
+    private TextView btnAdd, btnBack, btnClear, btnAddTable;
+    private IconView btn1, btn2, btn3, btn4, btn5, btn6;
     private List<IconView> btns = new ArrayList<>();
     private EditText etVal;
     private TextView tvValNumber, tvValTitle;
     private ListView lvTable;
     private TableAdapter adapter;
     private List<Table> tables;
+    private Integer tableIndex = 0;
     Point p;
 
     @Override
@@ -55,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
         sl = findViewById(R.id.sb_layout);
         sl1 = findViewById(R.id.sb_layout_1);
         btnAdd = findViewById(R.id.btn_add);
-        btnClear = findViewById(R.id.btn_delete);
+        btnClear = findViewById(R.id.btn_clear);
+        btnBack = findViewById(R.id.btn_back);
         btn1 = findViewById(R.id.btn_1);
         btn2 = findViewById(R.id.btn_2);
         btn3 = findViewById(R.id.btn_3);
@@ -98,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                         String[] v = currTxt.split("\\+");
                         p = new Point(new Point.Data(Integer.valueOf(v[0]), Integer.valueOf(v[1]), val));
                         tvValNumber.setText(String.format("%d",p.getData().getTotal()));
-                        tvValTitle.setText(String.format("%s",p.getTitle()));
+                        tvValTitle.setText(String.format("%s",p.getTitleTx()));
                     }
                     clearBtn();
                     btn.setTextColor(getResources().getColor(R.color.red));
@@ -111,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(p != null){
                     sl.addValueItem(p);
-                    Toast.makeText(MainActivity.this, p.getTitle(), Toast.LENGTH_SHORT).show();
                     clear();
                 }
             }
@@ -131,6 +129,13 @@ public class MainActivity extends AppCompatActivity {
                 clear();
             }
         });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sl.backItem();
+            }
+        });
     }
 
     private void clear(){
@@ -145,5 +150,11 @@ public class MainActivity extends AppCompatActivity {
         btns.forEach((btn) -> {
             btn.setTextColor(getResources().getColor(R.color.white));
         });
+    }
+
+    public void changeTableIndex(Integer index){
+        tables.get(tableIndex).setData(sl.getCurrent(), sl.getData(), sl.getLines());
+        this.tableIndex = index;
+        sl.setData(tables.get(index).getCurrent(), tables.get(index).getPoints(), tables.get(index).getLines());
     }
 }

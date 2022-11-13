@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressLint("NewApi")
-public class SicboLayout extends LinearLayout {
+public class SicboTxLayout extends LinearLayout {
 
     Paint paintRect = new Paint(), paintText = new Paint(), paintLine = new Paint();
     int w = 50, h = 50;
@@ -49,34 +49,43 @@ public class SicboLayout extends LinearLayout {
         return lines;
     }
 
-    public void setData(List<List<Point>> data, Map<String, Map<Integer, List<Point>>> lines, Point current){
+    public void setData(Point current, List<List<Point>> data, Map<String, Map<Integer, List<Point>>> lines){
         this.data = data;
         this.lines = lines;
         this.current = current;
+        if(this.data == null || this.data.size() == 0){
+            initData();
+        }
         invalidate();
     }
 
-    public SicboLayout(Context context) {
+    public SicboTxLayout(Context context) {
         super(context);
         init();
     }
 
-    public SicboLayout(Context context, @Nullable AttributeSet attrs) {
+    public SicboTxLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setValueAttr(context, attrs);
         init();
     }
 
-    public SicboLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SicboTxLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setValueAttr(context, attrs);
         init();
     }
 
-    public SicboLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public SicboTxLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setValueAttr(context, attrs);
         init();
+    }
+
+    public void initData(){
+        for(int i = 0; i <= Resources.getSystem().getDisplayMetrics().heightPixels / size; i++){
+            addColumn(Arrays.asList(null, null, null, null, null, null));
+        }
     }
 
     private void setValueAttr(Context mContext, AttributeSet mAttr){
@@ -98,7 +107,7 @@ public class SicboLayout extends LinearLayout {
         List<Point> dataTemp = Arrays.asList(null, null, null, null, null);
         int nCol = 0, nRow = 0;
         if(current != null) {
-            if (!this.current.equals(point)) {
+            if (!this.current.equalsTx(point)) {
                 for (int i = 0; i < data.size(); i++) {
                     if (data.get(i).get(0) == null) {
                         nCol = i;
@@ -116,18 +125,17 @@ public class SicboLayout extends LinearLayout {
                 }
             }
         }
-//        point = new Point(nCol, nRow, point.getData());
         if(this.data.size() - 1 < nCol){
             dataTemp.set(nRow, point);
             addColumn(dataTemp);
         }else{
             this.data.get(nCol).set(nRow, point);
         }
-        this.current = (nRow == 0) ?  new Point(nCol, nRow, point.getData(), null) : new Point(nCol, nRow, point.getData(), this.current);
+        this.current = (nRow == 0) ?  new Point(nCol, nRow, point.getData(), null, this.current) : new Point(nCol, nRow, point.getData(), this.current, this.current);
 
         //Create data line
         Point root = this.current.getNodeRoot();
-        String titleFlag = this.current.getNodeTitle();
+        String titleFlag = this.current.getNodeTitleTx();
         if(lines.get(titleFlag) == null){
             Map<Integer, List<Point>> tmpMap = new LinkedHashMap<>();
             tmpMap.put(root.getColumn(), new ArrayList<>());
@@ -148,33 +156,25 @@ public class SicboLayout extends LinearLayout {
         paintLine.setStrokeWidth(3f);
     }
 
-    public void initData(){
-        System.out.println("SIZE: "+Resources.getSystem().getDisplayMetrics().heightPixels);
-        for(int i = 0; i <= Resources.getSystem().getDisplayMetrics().heightPixels / size; i++){
-            addColumn(Arrays.asList(null, null, null, null, null, null));
-        }
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for(int i = 0; i < data.size(); i++){
-            paint(canvas, i);
-        }
+        paintTx(canvas);
         paintLine(canvas);
     }
 
-    public void paint(Canvas canvas, int col){
-        for(int i = 0; i < data.get(col).size(); i++){
-            String txt = (data.get(col).get(i) == null) ? "" : data.get(col).get(i).getTitle();
-            canvas.drawRect(col * size + 1, (i*size) + 1, col * size + w, (i*size) + h, paintRect);
-            canvas.drawText(txt, (float) (col * size + size/2 - fontSize.intValue()/1.5), (float) ((i * size) + size/2 + fontSize.intValue()/1.5), paintText);
+    public void paintTx(Canvas canvas){
+        for(int col = 0; col < data.size(); col++) {
+            for (int i = 0; i < data.get(col).size(); i++) {
+                String txt = (data.get(col).get(i) == null) ? "" : data.get(col).get(i).getTitleTx();
+                canvas.drawRect(col * size + 1, (i * size) + 1, col * size + w, (i * size) + h, paintRect);
+                canvas.drawText(txt, (float) (col * size + size / 2 - fontSize.intValue() / 1.5), (float) ((i * size) + size / 2 + fontSize.intValue() / 1.5), paintText);
+            }
         }
     }
 
     public boolean paintLine(Canvas canvas){
         if(lines.keySet().size() == 0) return false;
-
         for(String k : lines.keySet()){
             lines.get(k).keySet();
             if(lines.get(k).keySet().size() == 0) continue;
@@ -195,4 +195,17 @@ public class SicboLayout extends LinearLayout {
         }
         return true;
     }
+
+    @SuppressLint("DefaultLocale")
+    public void backItem(){
+        if(current != null){
+            data.get(current.getColumn()).set(current.getRow(), null);
+            Point root = this.current.getNodeRoot();
+            String titleTx = current.getNodeTitleTx();
+            lines.get(titleTx).get(root.getColumn()).remove(lines.get(titleTx).get(root.getColumn()).size() - 1);
+            current = current.getBefore();
+        }
+        invalidate();
+    }
+
 }
