@@ -8,9 +8,7 @@ import java.util.Map;
 public class Table {
     private String name;
     private boolean isActive = false;
-    private Point current;
-    List<List<Point>> points = new ArrayList<>();
-    Map<String, Map<Integer, List<Point>>> lines = new LinkedHashMap<>();
+    List<Point> data = new ArrayList<>();
 
     public Table(String name, boolean isActive){
         this.name = name;
@@ -37,21 +35,11 @@ public class Table {
         isActive = active;
     }
 
-    public void setData(Point current, List<List<Point>> points, Map<String, Map<Integer, List<Point>>> lines){
-        this.current = current;
-        this.points = points;
-        this.lines = lines;
+    public List<Point> getData() {
+        return data;
     }
 
-    public Point getCurrent() {
-        return current;
-    }
-
-    public List<List<Point>> getPoints() {
-        return points;
-    }
-
-    public Map<String, Map<Integer, List<Point>>> getLines() {
-        return lines;
+    public void setData(List<Point> data) {
+        this.data = data;
     }
 }

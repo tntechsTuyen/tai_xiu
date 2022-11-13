@@ -13,7 +13,7 @@ import com.mnt.tx.adapter.TableAdapter;
 import com.mnt.tx.data.Point;
 import com.mnt.tx.data.Table;
 import com.mnt.tx.widget.IconView;
-import com.mnt.tx.widget.SicboTxLayout;
+import com.mnt.tx.widget.SicboLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,12 +23,12 @@ import java.util.stream.IntStream;
 @SuppressLint({"NewApi","DefaultLocale"})
 public class MainActivity extends AppCompatActivity {
 
-    private SicboTxLayout sl, sl1;
-    private TextView btnAdd, btnBack, btnClear, btnAddTable;
+    private SicboLayout sl, sl1;
+    private TextView btnAdd, btnBack, btnClear, btnAddTable, btnClearTable;
     private IconView btn1, btn2, btn3, btn4, btn5, btn6;
     private List<IconView> btns = new ArrayList<>();
     private EditText etVal;
-    private TextView tvValNumber, tvValTitle;
+    private TextView tvValNumber, tvValTx, tvValLh;
     private ListView lvTable;
     private TableAdapter adapter;
     private List<Table> tables;
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         btnAdd = findViewById(R.id.btn_add);
         btnClear = findViewById(R.id.btn_clear);
         btnBack = findViewById(R.id.btn_back);
+        btnClearTable = findViewById(R.id.btn_clear_table);
         btn1 = findViewById(R.id.btn_1);
         btn2 = findViewById(R.id.btn_2);
         btn3 = findViewById(R.id.btn_3);
@@ -65,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         btnAddTable = findViewById(R.id.btn_add_table);
         etVal = findViewById(R.id.et_val_1);
         tvValNumber = findViewById(R.id.tv_value_number);
-        tvValTitle = findViewById(R.id.tv_value_title);
+        tvValTx = findViewById(R.id.tv_val_tx);
+        tvValLh = findViewById(R.id.tv_val_lh);
 //        tvCurrentNumber = findViewById(R.id.tv_current_number);
         sl.initData();
         sl1.initData();
@@ -97,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
                         String[] v = currTxt.split("\\+");
                         p = new Point(new Point.Data(Integer.valueOf(v[0]), Integer.valueOf(v[1]), val));
                         tvValNumber.setText(String.format("%d",p.getData().getTotal()));
-                        tvValTitle.setText(String.format("%s",p.getTitleTx()));
+                        tvValTx.setText(String.format("%s",p.getTitle(1)));
+                        tvValLh.setText(String.format("%s",p.getTitle(2)));
                     }
                     clearBtn();
                     btn.setTextColor(getResources().getColor(R.color.red));
@@ -109,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(p != null){
-                    sl.addValueItem(p);
+                    tables.get(tableIndex).getData().add(p);
+                    sl.buildData(tables.get(tableIndex).getData());
+                    sl1.buildData(tables.get(tableIndex).getData());
                     clear();
                 }
             }
@@ -133,7 +138,18 @@ public class MainActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sl.backItem();
+                tables.get(tableIndex).getData().remove(tables.get(tableIndex).getData().size() - 1);
+                sl.buildData(tables.get(tableIndex).getData());
+                sl1.buildData(tables.get(tableIndex).getData());
+            }
+        });
+
+        btnClearTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tables.get(tableIndex).getData().clear();
+                sl.buildData(tables.get(tableIndex).getData());
+                sl1.buildData(tables.get(tableIndex).getData());
             }
         });
     }
@@ -141,7 +157,8 @@ public class MainActivity extends AppCompatActivity {
     private void clear(){
         this.p = null;
         tvValNumber.setText("");
-        tvValTitle.setText("");
+        tvValTx.setText("");
+        tvValLh.setText("");
         etVal.setText("");
         clearBtn();
     }
@@ -153,8 +170,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void changeTableIndex(Integer index){
-        tables.get(tableIndex).setData(sl.getCurrent(), sl.getData(), sl.getLines());
+        tables.get(this.tableIndex).setData(sl.getData());
         this.tableIndex = index;
-        sl.setData(tables.get(index).getCurrent(), tables.get(index).getPoints(), tables.get(index).getLines());
+        sl.buildData(tables.get(this.tableIndex).getData());
+        sl1.buildData(tables.get(this.tableIndex).getData());
     }
 }

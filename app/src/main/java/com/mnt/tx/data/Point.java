@@ -11,6 +11,7 @@ public class Point {
     private Data data;
     private String title;
     private Point parent, before;
+    private boolean isLeftToRight = false, isUpToDown = true;
 
     public Point(Integer column, Integer row){
         this.column = column;
@@ -29,6 +30,14 @@ public class Point {
         this.before = before;
     }
 
+    public void setColumn(Integer column) {
+        this.column = column;
+    }
+
+    public void setRow(Integer row) {
+        this.row = row;
+    }
+
     public Integer getColumn() {
         return column;
     }
@@ -39,6 +48,10 @@ public class Point {
 
     public Data getData() {
         return data;
+    }
+
+    public void setParent(Point parent) {
+        this.parent = parent;
     }
 
     public Point getParent() {
@@ -53,50 +66,66 @@ public class Point {
         this.before = before;
     }
 
-    public String getTitleTx() {
-        if(data.isSame()){
-            title = "B";
+    public String getTitle(int flag) {
+        if(flag == 1){
+            if(data.isSame()){
+                return "B";
+            }else{
+                if(data.getTotal() >= 4 && data.getTotal() <= 10) return "X";
+                else return "T";
+            }
         }else{
-            if(data.getTotal() >= 4 && data.getTotal() <= 10) title = "X";
-            else title = "T";
+            if(data.getTotal().equals(11)) return "11";
+            else if(data.getTotal() < 11) return "L";
+            else if(data.getTotal() > 11) return "H";
         }
-        return title;
-    }
-
-    public boolean equalsTx(Point p){
-        return this.getTitleTx().equals(p.getTitleTx()) || p.getTitleTx().equals("B") || equalsChildTx(this, p.getTitleTx());
-    }
-
-    public String getTitleLh(){
-        if(data.getTotal().equals(11)) return "11";
-        else if(data.getTotal() < 11) return "L";
-        else if(data.getTotal() > 11) return "H";
         return null;
     }
 
-    public boolean equalsChildTx(Point p, String title){
-        if(p.getTitleTx().equals("B")){
-            if(p.getParent() != null) return equalsChildTx(p.getParent(), title);
+    public boolean equals(Point p, int flag){
+        if(flag == 1) return this.getTitle(flag).equals(p.getTitle(flag)) || p.getTitle(flag).equals("B") || equalsChild(this, p.getTitle(flag), flag);
+        else return this.getTitle(flag).equals(p.getTitle(flag)) || p.getTitle(flag).equals("11") || equalsChild(this, p.getTitle(flag), flag);
+    }
+
+    public boolean equalsChild(Point p, String title, int flag){
+        if(p.getTitle(flag).equals("B") || p.getTitle(flag).equals("11")){
+            if(p.getParent() != null) return equalsChild(p.getParent(), title, flag);
             else return true;
         }else{
-            return p.getTitleTx().equals(title);
+            return p.getTitle(flag).equals(title);
         }
     }
 
-    public String getNodeTitleTx(){
+    public String getNodeTitle(int flag){
         if(this.getParent() == null){
-            return this.getTitleTx();
+            return this.getTitle(flag);
         } else {
-            if(this.getTitleTx().equals("B")){
-                return this.getParent().getNodeTitleTx();
+            if(this.getTitle(flag).equals("B") || this.getTitle(flag).equals("11")){
+                return this.getParent().getNodeTitle(flag);
             }else{
-                return this.getTitleTx();
+                return this.getTitle(flag);
             }
         }
     }
 
     public Point getNodeRoot(){
         return (this.getParent() == null) ? this : this.getParent().getNodeRoot();
+    }
+
+    public boolean isLeftToRight() {
+        return isLeftToRight;
+    }
+
+    public void setLeftToRight(boolean leftToRight) {
+        isLeftToRight = leftToRight;
+    }
+
+    public boolean isUpToDown() {
+        return isUpToDown;
+    }
+
+    public void setUpToDown(boolean upToDown) {
+        isUpToDown = upToDown;
     }
 
     public static class Data{

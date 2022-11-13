@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">tx</string>
+    <string name="app_name">Tài Xỉu Dev</string>
     <string name="dice">&#xf522;</string>
     <string name="dice_1">&#xf525;</string>
     <string name="dice_2">&#xf528;</string>
