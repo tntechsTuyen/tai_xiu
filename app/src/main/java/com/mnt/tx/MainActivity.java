@@ -112,9 +112,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(p != null){
-                    tables.get(tableIndex).getData().add(p);
+                    tables.get(tableIndex).getData().add(new Point(p.getData()));
+                    tables.get(tableIndex).getData1().add(new Point(p.getData()));
                     sl.buildData(tables.get(tableIndex).getData());
-                    sl1.buildData(tables.get(tableIndex).getData());
+                    sl1.buildData(tables.get(tableIndex).getData1());
                     clear();
                 }
             }
@@ -138,9 +139,12 @@ public class MainActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tables.get(tableIndex).getData().remove(tables.get(tableIndex).getData().size() - 1);
-                sl.buildData(tables.get(tableIndex).getData());
-                sl1.buildData(tables.get(tableIndex).getData());
+                if(tables.get(tableIndex).getData().size() > 0){
+                    tables.get(tableIndex).getData().remove(tables.get(tableIndex).getData().size() - 1);
+                    tables.get(tableIndex).getData1().remove(tables.get(tableIndex).getData1().size() - 1);
+                    sl.buildData(tables.get(tableIndex).getData());
+                    sl1.buildData(tables.get(tableIndex).getData1());
+                }
             }
         });
 
@@ -148,8 +152,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 tables.get(tableIndex).getData().clear();
+                tables.get(tableIndex).getData1().clear();
                 sl.buildData(tables.get(tableIndex).getData());
-                sl1.buildData(tables.get(tableIndex).getData());
+                sl1.buildData(tables.get(tableIndex).getData1());
             }
         });
     }
@@ -171,8 +176,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeTableIndex(Integer index){
         tables.get(this.tableIndex).setData(sl.getData());
+        tables.get(this.tableIndex).setData1(sl1.getData());
         this.tableIndex = index;
         sl.buildData(tables.get(this.tableIndex).getData());
-        sl1.buildData(tables.get(this.tableIndex).getData());
+        sl1.buildData(tables.get(this.tableIndex).getData1());
     }
 }

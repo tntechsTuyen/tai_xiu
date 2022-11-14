@@ -19,7 +19,7 @@ public class Point {
     }
 
     public Point(Data data){
-        this.data = data;
+        this.data = new Data(data.val1, data.val2, data.val3);
     }
 
     public Point(Integer column, Integer row, Data data, Point parent, Point before) {

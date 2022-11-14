@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressLint("NewApi")
 public class SicboLayout extends LinearLayout {
@@ -103,7 +105,9 @@ public class SicboLayout extends LinearLayout {
 
     /**
      * */
-    public void buildData(List<Point> mData){
+    public boolean buildData(List<Point> mData){
+        if(mData == null) return false;
+
         this.data = mData;
         List<Point> dataTemp = Arrays.asList(null, null, null, null, null);
         int nCol = 0, nRow = 0;
@@ -118,6 +122,9 @@ public class SicboLayout extends LinearLayout {
                         }
                     }
                     nRow = 0;
+                    data.get(i).setParent(null);
+                    data.get(i).setUpToDown(true);
+                    data.get(i).setLeftToRight(false);
                 } else {
                     if (data.get(i-1).getRow() == rows - 1
                             || (data.get(i-1).getRow() < rows - 1 && points.get(data.get(i-1).getColumn()).get(data.get(i-1).getRow()+1) != null )) {
@@ -151,27 +158,45 @@ public class SicboLayout extends LinearLayout {
 
         //Create data line
         lines.clear();
-        List<Point> pointNone = new ArrayList<>();
+//        List<Point> pointNone = new ArrayList<>();
         for(int i = 0; i < data.size(); i++){
             Point root = data.get(i).getNodeRoot();
             String titleFlag = data.get(i).getNodeTitle(flag);
             if(lines.get(titleFlag) == null){
-                if(titleFlag.equals("B") || titleFlag.equals("11")){
-                    pointNone.add(data.get(i));
-                    continue;
-                }
+//                if(titleFlag.equals("B") || titleFlag.equals("11")){
+//                    pointNone.add(data.get(i));
+//                    continue;
+//                }
                 Map<Integer, List<Point>> tmpMap = new LinkedHashMap<>();
                 tmpMap.put(root.getColumn(), new ArrayList<>());
                 lines.put(titleFlag, tmpMap);
-            }else if(lines.get(titleFlag).get(root.getColumn()) == null) lines.get(titleFlag).put(root.getColumn(), new ArrayList<>());
-
-            if(pointNone.size() > 0){
-                lines.get(titleFlag).get(root.getColumn()).addAll(pointNone);
-                pointNone.clear();
+            }else if(lines.get(titleFlag).get(root.getColumn()) == null){
+                lines.get(titleFlag).put(root.getColumn(), new ArrayList<>());
+//                lines.get(titleFlag).get(root.getColumn()).addAll(pointNone);
+//                pointNone.clear();
             }
+
             lines.get(titleFlag).get(root.getColumn()).add(data.get(i));
+
+        }
+
+        String tmpFlag = (lines.get("B") != null) ? "B" : (lines.get("11") != null) ? "11" : null;
+        if(tmpFlag != null){
+            Integer[] tmpCol = new Integer[lines.get(tmpFlag).size()];
+            lines.get(tmpFlag).keySet().toArray(tmpCol);
+            for(String key : lines.keySet()){
+                if(key.equals(tmpFlag)) continue;
+                for(Integer col : lines.get(key).keySet()){
+                    if(Arrays.asList(tmpCol).contains(col)){
+                        List<Point> l1 = Stream.concat(lines.get(tmpFlag).get(col).stream(), lines.get(key).get(col).stream())
+                                .collect(Collectors.toList());
+                        lines.get(tmpFlag).put(col, l1);
+                    }
+                }
+            }
         }
         invalidate();
+        return true;
     }
 
     private void init(){
@@ -233,11 +258,11 @@ public class SicboLayout extends LinearLayout {
                 List<Point> lstPoint = lines.get(k).get(col);
                 Point pStart = lstPoint.get(0);
                 Point pEnd = lstPoint.get(lstPoint.size()-1);
-                if(pStart.getColumn().equals(pEnd.getColumn())) continue;
-                System.out.print(String.format("%s [%d]: [%d][%d] ", k, col, col, 0));
+                if(pStart.getColumn().equals(pEnd.getColumn()) || lstPoint.size() < 3) continue;
+//                System.out.print(String.format("%s [%d]: [%d][%d] ", k, col, col, 0));
                 for(int i = 1; i < lstPoint.size(); i++){
                     //startX, startY, endX, endY
-                    System.out.print(String.format(" [%d][%d] ", lstPoint.get(i).getColumn(), lstPoint.get(i).getRow()));
+//                    System.out.print(String.format(" [%d][%d] ", lstPoint.get(i).getColumn(), lstPoint.get(i).getRow()));
                     canvas.drawLine((lstPoint.get(i-1).getColumn()) * size + size/2
                             , (lstPoint.get(i-1).getRow()) * size + size/2
                             , (lstPoint.get(i).getColumn()) * size + size/2
